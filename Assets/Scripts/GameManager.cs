@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     public Transform spawnPosZMin;
     public Transform defaultSpawnPos;
 
+    [Header("Tracking Animals")]
+    public List<GameObject> sheepList;
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,5 +47,58 @@ public class GameManager : MonoBehaviour
     public void SpawnAnimal(GameObject prefab, Vector3 spawnPosition)
     {
         GameObject spawnedPrefab = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        sheepList.Add(spawnedPrefab);
     }
+
+
+    public void SelectAnimalPhase()
+    {
+
+    }
+
+    public void OutcomesPhase()
+    {
+        Produce();
+        Breed();
+        Feed();
+    }
+
+    public void UpdateStatsPhase()
+    {
+
+    }
+
+    public void EventPhase()
+    {
+
+    }
+
+    public void UpgradesPhase()
+    {
+
+    }
+
+    #region Buildings
+    public void Breed()
+    {
+
+    }
+
+    public void Feed()
+    {
+
+    }
+
+    public void Produce()
+    {
+
+    }
+
+    public void Sell()
+    {
+
+    }
+    #endregion
+
+
 }
