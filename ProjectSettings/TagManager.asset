@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Animal
+  - Feed
+  - Produce
+  - Breed
+  - Border
+  - Sell
   layers:
   - Default
   - TransparentFX
