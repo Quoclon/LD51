@@ -9,10 +9,13 @@ public class AnimalController : MonoBehaviour
     public Buildings currentBuilding;
     public bool isSelected;
 
+    SelectionHighlighter selectionHighlighter;
+
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        selectionHighlighter = GetComponent<SelectionHighlighter>();
         isSelected = false;
     }
 
@@ -24,12 +27,15 @@ public class AnimalController : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
+        isSelected = false;
         agent.SetDestination(destination);
+        selectionHighlighter.UnHighlighSelectedUnit();
     }
 
     public void SelectUnit(bool unitSelected)
     {
         isSelected = unitSelected;
+        selectionHighlighter.HighlightSelectedUnit();
     }
 
     public void SetBuilding(Buildings building)
@@ -37,11 +43,12 @@ public class AnimalController : MonoBehaviour
         currentBuilding = building;
     }
 
-
+    /*
     private void OnMouseOver()
     {
         Debug.Log("Mouse Hovering Over: " + this.name);
     }
+    */
 
 
 }
