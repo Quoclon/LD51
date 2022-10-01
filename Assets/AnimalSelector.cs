@@ -23,15 +23,39 @@ public class AnimalSelector : MonoBehaviour
 
                 Debug.Log(hitInfo.collider.gameObject.name);
 
-                if (animalController != null && hitInfo.collider.gameObject.tag != "Animal")
+                string objectTag = hitInfo.collider.gameObject.tag;
+
+                if (animalController != null && objectTag != "Animal")
                 {
                     if (animalController.isSelected)
                     {
-                        animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+                        if(objectTag == "Breed")
+                        {
+                            animalController.SetBuilding(Buildings.Breed);
+                            Debug.Log("Breed: " + hitInfo.collider.gameObject.tag);
+                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+                        }
+
+                        else if (objectTag == "Feed")
+                        {
+                            animalController.SetBuilding(Buildings.Feed);
+                            Debug.Log("Feed: " + hitInfo.collider.gameObject.tag);
+                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+
+                        }
+
+                        else if (objectTag == "Produce")
+                        {
+                            animalController.SetBuilding(Buildings.Produce);
+                            Debug.Log("Produce: " + hitInfo.collider.gameObject.tag);
+                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+                        }
+
+                        // Send animal toard building
                     }
                 }
 
-                if (hitInfo.collider.gameObject.tag == "Animal")
+                if (objectTag == "Animal")
                 {
                     AnimalController tempAnimalController = hitInfo.collider.gameObject.GetComponent<AnimalController>();
                     

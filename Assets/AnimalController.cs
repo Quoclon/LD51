@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class AnimalController : MonoBehaviour
 {
     NavMeshAgent agent;
+    public Buildings currentBuilding;
     public bool isSelected;
 
     // Start is called before the first frame update
@@ -30,4 +31,18 @@ public class AnimalController : MonoBehaviour
     {
         isSelected = unitSelected;
     }
+
+    public void SetBuilding(Buildings building)
+    {
+        currentBuilding = building;
+    }
+}
+
+public enum Buildings
+{
+    None,
+    Breed,
+    Feed,
+    Produce,
+    Truck
 }
