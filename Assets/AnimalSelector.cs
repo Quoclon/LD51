@@ -53,23 +53,8 @@ public class AnimalSelector : MonoBehaviour
                     {
                         animalController = tempAnimalController;
                         animalController.SelectUnit(true);
-                    }
-
-
-            
-
-                    //Debug.Log("hit animal");
-                    //animalController = tempAnimalController;
-                    //animalController.SelectUnit(true);
-
-                 
+                    }                 
                 }
-                else
-                {
-                    //animalController.SelectUnit(false);
-                    //animalController = null;
-                }
-
             }
         }
     }
