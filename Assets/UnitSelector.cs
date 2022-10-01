@@ -23,7 +23,7 @@ public class UnitSelector : MonoBehaviour
             if(Physics.Raycast(ray, out RaycastHit hitInfo))
             {
 
-                Debug.Log(hitInfo.collider.gameObject.name);
+                //Debug.Log(hitInfo.collider.gameObject.name);
 
                 string objectTag = hitInfo.collider.gameObject.tag;
 
