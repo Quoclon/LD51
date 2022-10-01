@@ -36,6 +36,14 @@ public class AnimalController : MonoBehaviour
     {
         currentBuilding = building;
     }
+
+
+    private void OnMouseOver()
+    {
+        Debug.Log("Mouse Hovering Over: " + this.name);
+    }
+
+
 }
 
 public enum Buildings
