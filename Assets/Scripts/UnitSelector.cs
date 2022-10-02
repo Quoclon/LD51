@@ -12,8 +12,6 @@ public class UnitSelector : MonoBehaviour
 
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
@@ -22,36 +20,47 @@ public class UnitSelector : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out RaycastHit hitInfo))
             {
-
+                // Get the tag of the RayCast target
+                string objectTag = hitInfo.collider.gameObject.tag;
                 //Debug.Log(hitInfo.collider.gameObject.name);
 
-                string objectTag = hitInfo.collider.gameObject.tag;
-
+                // If an animal is selected AND you've now clicked on something else
                 if (animalController != null && objectTag != "Animal")
                 {
+                    // Select One of the 'Buildings'
                     if (animalController.isSelected)
                     {
-                        if(objectTag == "Breed")
+                        //animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+                        bool deactiveSelectedUnit = false;
+
+                        if (objectTag == "Breed")
                         {
                             animalController.SetBuilding(Buildings.Breed);
-                            //Debug.Log("Breed: " + hitInfo.collider.gameObject.tag);
-                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
-                            animalController = null;
+                            deactiveSelectedUnit = true;                       
                         }
 
                         else if (objectTag == "Feed")
                         {
                             animalController.SetBuilding(Buildings.Feed);
-                            //Debug.Log("Feed: " + hitInfo.collider.gameObject.tag);
-                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
-                            animalController = null;
+                            deactiveSelectedUnit = true;
                         }
 
                         else if (objectTag == "Produce")
                         {
                             animalController.SetBuilding(Buildings.Produce);
-                            //Debug.Log("Produce: " + hitInfo.collider.gameObject.tag);
-                            animalController.SetDestination(hitInfo.collider.gameObject.transform.position);
+                            deactiveSelectedUnit = true;
+                        }
+
+                        else if (objectTag == "Sell")
+                        {
+                            animalController.SetBuilding(Buildings.Sell);
+                            deactiveSelectedUnit = true;
+                        }
+
+                        if (deactiveSelectedUnit)
+                        {
+                            animalController.SetAnimalVisuals(false);
+                            animalController.SelectUnit(false);
                             animalController = null;
                         }
                     }

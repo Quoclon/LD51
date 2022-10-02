@@ -29,7 +29,10 @@ public class GameManager : MonoBehaviour
     public float milkValue;
     public float eggValue;
 
-    [Header("Spawning Details")]
+    [Header("Spawning Testing")]
+    public int testingNumSpawn;
+
+    [Header("Spawning Prefabs")]
     public int sheepToSpawn;
     public int cowToSpawn;
     public int chickenToSpawn;
@@ -37,7 +40,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < testingNumSpawn; i++)
         {
             SpawnAnimal(sheepPrefab);
         }    

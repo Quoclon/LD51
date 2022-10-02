@@ -5,11 +5,17 @@ using UnityEngine.AI;
 
 public class AnimalController : MonoBehaviour
 {
-    NavMeshAgent agent;
+    SelectionHighlighter selectionHighlighter;
+
+    [Header("Building for Action Phase")]
     public Buildings currentBuilding;
+
+    [Header("Status Bools")]
     public bool isSelected;
 
-    SelectionHighlighter selectionHighlighter;
+    [Header("Random Movement")]
+    NavMeshAgent agent;
+    public float walkRadius;
 
     // Start is called before the first frame update
     void Start()
@@ -17,13 +23,38 @@ public class AnimalController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         selectionHighlighter = GetComponent<SelectionHighlighter>();
         isSelected = false;
+
+        // Start by moving Animal
+        agent.SetDestination(RandomNavMeshLocation());
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (agent != null && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            agent.SetDestination(RandomNavMeshLocation());
+        }
     }
+
+    public Vector3 RandomNavMeshLocation()
+    {
+        // ~ Used to be in Start() could be break things
+        walkRadius = Random.Range(4f, 12f);
+
+        Vector3 finalPosition = Vector3.zero;
+        Vector3 randomPosition = Random.insideUnitSphere * walkRadius;
+        randomPosition += transform.position;
+
+        if(NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, walkRadius, 1))
+        {
+            finalPosition = hit.position;
+        }
+
+        return finalPosition;
+    }
+
+
 
     public void SetDestination(Vector3 destination)
     {
@@ -35,12 +66,23 @@ public class AnimalController : MonoBehaviour
     public void SelectUnit(bool unitSelected)
     {
         isSelected = unitSelected;
-        selectionHighlighter.HighlightSelectedUnit();
+        if(isSelected)
+            selectionHighlighter.HighlightSelectedUnit();
+        if(!isSelected)
+            selectionHighlighter.UnHighlighSelectedUnit();
     }
 
     public void SetBuilding(Buildings building)
     {
         currentBuilding = building;
+    }
+
+    public void SetAnimalVisuals(bool turnOnVisuals)
+    {
+        if (turnOnVisuals)
+            selectionHighlighter.AddVisualsAndClickable();
+        if (!turnOnVisuals)
+            selectionHighlighter.RemoveVisualsAndClickable();
     }
 }
 
@@ -50,5 +92,5 @@ public enum Buildings
     Breed,
     Feed,
     Produce,
-    Truck
+    Sell
 }
