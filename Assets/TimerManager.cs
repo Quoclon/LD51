@@ -11,8 +11,9 @@ public class TimerManager : MonoBehaviour
 
     public float timer;
     public float timerMax;
-
     public bool timerRunning;
+
+    public bool roundOver;
 
 
     // Start is called before the first frame update
@@ -23,7 +24,7 @@ public class TimerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        RestartTimer();
+        StartTimer();
     }
 
     // Update is called once per frame
@@ -38,14 +39,20 @@ public class TimerManager : MonoBehaviour
 
         if (timer <= 0)
         {
-            // DO STUFF -  Transition Scene, etc.
-            RestartTimer();
+            RoundOver();
         }
     }
 
-    public void RestartTimer()
+    public void StartTimer()
     {
         timer = timerMax;
         timerRunning = true;
+        roundOver = false;
+    }
+
+    public void RoundOver()
+    {
+        timerRunning = false;
+        roundOver = true;
     }
 }

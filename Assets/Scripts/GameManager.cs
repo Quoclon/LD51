@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Turn Management")]
+    public TimerManager timeManager;
+    public GamePhase currentGamePhase;
+    public bool loadNextPhase;
+    public bool isFadingTransiton;
+    public float transitionTimer;
+    public float transitionTimerMax;
+
+    [Header("Canvas Transition")]
+    public CanvasGroup transitionCanvas;
+
     [Header("Prefabs")]
     public GameObject chickenPrefab;
     public GameObject cowPrefab;
@@ -37,13 +48,29 @@ public class GameManager : MonoBehaviour
     public int cowToSpawn;
     public int chickenToSpawn;
 
+    // ~TEST TRANSITION
+    float fadeDuration = 4f;
+
     // Start is called before the first frame update
     void Start()
     {
         for (int i = 0; i < testingNumSpawn; i++)
         {
             SpawnAnimal(sheepPrefab);
-        }    
+        }
+
+        // Start with Selection Scene, Load Next Scene False
+        isFadingTransiton = true;
+        loadNextPhase = false;
+
+        transitionTimerMax = 5f;
+        transitionTimer = transitionTimerMax;
+
+        currentGamePhase = GamePhase.Selection;
+
+        //TransitionFade(transitionCanvas, transitionCanvas.alpha, 1);
+        
+        //StartCoroutine(ToggleTransition(transitionCanvas, 0, 1));
     }
 
     // Update is called once per frame
@@ -51,18 +78,74 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
             OutcomesPhase();
+
+        //TransitionFade(transitionCanvas, transitionCanvas.alpha, 1);
+        if(Input.GetKeyDown(KeyCode.P))
+            StartCoroutine(ToggleTransition(transitionCanvas, 1, 0));
+
+        if (timeManager.roundOver)
+        {
+            StartCoroutine(ToggleTransition(transitionCanvas, 0, 1));
+        }
+
     }
 
-    public void SpawnAnimal(GameObject prefab)
+    IEnumerator ToggleTransition(CanvasGroup _transitionCanvas, float start, float end)
     {
-        Vector3 randomSpawnPosition;
-        randomSpawnPosition = new Vector3(defaultSpawnPos.position.x + Random.Range(-8, 8), defaultSpawnPos.position.y, defaultSpawnPos.position.z + Random.Range(-6, 6));
-        GameObject spawnedPrefab = Instantiate(prefab, randomSpawnPosition, Quaternion.identity);
-        animalList.Add(spawnedPrefab);
-        //tempPerRoundSpawnList.Add(spawnedPrefab);
+        float counter = 0f;
+        while (counter < fadeDuration)
+        {
+            counter += Time.deltaTime;
+            _transitionCanvas.alpha = Mathf.Lerp(start, end, counter / fadeDuration);
+
+            // If we're moving back to Alpha 0, we're about to return into the game
+            if (end == 0 && _transitionCanvas.alpha == 0)
+            {
+                NextPhase();
+                timeManager.StartTimer();
+            }
+
+            else if (end == 1 && _transitionCanvas.alpha == 1)
+            {
+                StartCoroutine(ToggleTransition(_transitionCanvas, 1, 0));
+            }
+
+            yield return null;
+
+        }
+
     }
 
-
+    public void NextPhase()
+    {
+        switch (currentGamePhase)
+        {
+            case GamePhase.Selection:
+                currentGamePhase = GamePhase.Outcomes;
+                break;
+            case GamePhase.Outcomes:
+                currentGamePhase = GamePhase.EndTurn;
+                break;
+            case GamePhase.EndTurn:
+                currentGamePhase = GamePhase.Events;
+                break;
+            case GamePhase.Events:
+                currentGamePhase = GamePhase.Upgrades;
+                break;
+            case GamePhase.Upgrades:
+                currentGamePhase = GamePhase.Selection;
+                break;
+            case GamePhase.Transition:
+                //currentGamePhase = GamePhase.Outcomes;
+                break;
+            default:
+                break;
+        }
+        currentGamePhase++;
+        Debug.Log("NextPhase Started: " + currentGamePhase);
+        timeManager.StartTimer();
+    }
+  
     public void SelectAnimalPhase()
     {
 
@@ -197,6 +280,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    
     public void Produce(AnimalStats animal)
     {
         if (animal.currentAge < animal.adultAge)
@@ -221,7 +305,6 @@ public class GameManager : MonoBehaviour
 
     }
     #endregion
-
 
     public void EndTurnPhase(AnimalStats animal)
     {
@@ -265,12 +348,29 @@ public class GameManager : MonoBehaviour
 
     }
 
+
     public void UpgradesPhase()
     {
 
     }
 
-  
+    public void SpawnAnimal(GameObject prefab)
+    {
+        Vector3 randomSpawnPosition;
+        randomSpawnPosition = new Vector3(defaultSpawnPos.position.x + Random.Range(-8, 8), defaultSpawnPos.position.y, defaultSpawnPos.position.z + Random.Range(-6, 6));
+        GameObject spawnedPrefab = Instantiate(prefab, randomSpawnPosition, Quaternion.identity);
+        animalList.Add(spawnedPrefab);
+        //tempPerRoundSpawnList.Add(spawnedPrefab);
+    }
 
+}
 
+public enum GamePhase
+{
+    Selection,
+    Outcomes,
+    EndTurn,
+    Events,
+    Upgrades,
+    Transition
 }
