@@ -205,7 +205,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ce81b6680b300409db15f18ec9010d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinRenderer: {fileID: 1634947384439517532}
+  capsuleCollider: {fileID: 2457572747800273977}
+  worldSpaceStatsCanvas: {fileID: 8117370644130606582}
+  skinRendererDefault: {fileID: 1634947384439517532}
+  skinRendererOutline: {fileID: 1359382785}
   outlineNone: {fileID: 2100000, guid: e428745a529e97c42be388f7afd8563f, type: 2}
   outlineRed: {fileID: 2100000, guid: b801da45bf7b9904cb4495364063820c, type: 2}
   outlineYellow: {fileID: 2100000, guid: 37576584b4fff454e98011cef11fd9bd, type: 2}

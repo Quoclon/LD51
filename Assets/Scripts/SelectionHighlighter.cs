@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SelectionHighlighter : MonoBehaviour
 {
-    public Renderer skinRenderer;
+    [Header("Appear/Dissapear Objets")]
+    public CapsuleCollider capsuleCollider;
+    public Canvas worldSpaceStatsCanvas;
+    //public NavMeshAgent navmeshAgent;
+
+    [Header("Renderers")]
+    public Renderer skinRendererDefault;
+    public Renderer skinRendererOutline;
 
     [Header("Quibli Outline Materials")]
     public Material outlineNone;
@@ -18,28 +26,67 @@ public class SelectionHighlighter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        skinRenderer.material = outlineNone;
+        skinRendererOutline.material = outlineNone;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            RemoveVisualsAndClickable();
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            AddVisualsAndClickable();
+        }
     }
 
     private void OnMouseOver()
     {
         if(!animalController.isSelected)
-            skinRenderer.material = outlineYellow;
+            skinRendererOutline.material = outlineYellow;
     }
 
     private void OnMouseExit()
     {
         if(!animalController.isSelected)
-            skinRenderer.material = outlineNone;
+            skinRendererOutline.material = outlineNone;
     }
 
     public void HighlightSelectedUnit()
     {
-        skinRenderer.material = outlineGreen;
+        skinRendererOutline.material = outlineGreen;
     }
 
     public void UnHighlighSelectedUnit()
     {
-        skinRenderer.material = outlineNone;
+        skinRendererOutline.material = outlineNone;
+    }
+
+    public void RemoveVisualsAndClickable()
+    {
+        skinRendererDefault.gameObject.SetActive(false);
+        skinRendererOutline.gameObject.SetActive(false);
+        //navmeshAgent.ActivateCurrentOffMeshLink(false);
+        capsuleCollider.enabled = false;
+        worldSpaceStatsCanvas.rootCanvas.enabled = false;
+        //navmeshAgent.gameObject.SetActive(false);
+        //capsuleCollider.gameObject.SetActive(false);
+
+    }
+
+    public void AddVisualsAndClickable()
+    {
+        skinRendererDefault.gameObject.SetActive(true);
+        skinRendererOutline.gameObject.SetActive(true);
+        //navmeshAgent.ActivateCurrentOffMeshLink(true);
+        capsuleCollider.enabled = true;
+        //worldSpaceStatsCanvas.enabled = true;
+        worldSpaceStatsCanvas.rootCanvas.enabled = true;
+
+
+        //navmeshAgent.gameObject.SetActive(true);
+        //capsuleCollider.gameObject.SetActive(true);
     }
 }
