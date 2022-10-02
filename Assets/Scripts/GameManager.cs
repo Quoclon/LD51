@@ -1,24 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    // ~TEST TRANSITION
+    [Header("Transition Timer")]
+    public float fadeDuration;
+
     [Header("Turn Management")]
     public TimerManager timeManager;
     public GamePhase currentGamePhase;
-    public bool loadNextPhase;
-    public bool isFadingTransiton;
-    public float transitionTimer;
-    public float transitionTimerMax;
+    private bool loadNextPhase;
+    private bool isFadingTransiton;
 
     [Header("Canvas Transition")]
     public CanvasGroup transitionCanvas;
 
     [Header("Prefabs")]
     public GameObject chickenPrefab;
-    public GameObject cowPrefab;
     public GameObject sheepPrefab;
+    public GameObject cowPrefab;
 
     [Header("Spawning")]
     public Transform defaultSpawnPos;
@@ -28,28 +31,35 @@ public class GameManager : MonoBehaviour
     public List<GameObject> tempPerRoundSpawnList;
     public List<GameObject> tempAnimalDeathList;
 
-    [Header("Inventory")]
-    public float gold;
-    public float wool;
-    public float milk;
-    public float eggs;
-
-
-    [Header("Economy")]
+    [Header("Economy - Produce")]
+    public float eggValue;
     public float woolValue;
     public float milkValue;
-    public float eggValue;
+
+    [Header("Economy - Produce")]
+    public float chickenValue;
+    public float sheepValue;
+    public float cowValue;
 
     [Header("Spawning Testing")]
     public int testingNumSpawn;
 
-    [Header("Spawning Prefabs")]
+    [Header("Spawning Num of Prefabs")]
+    public int chickenToSpawn;
     public int sheepToSpawn;
     public int cowToSpawn;
-    public int chickenToSpawn;
 
-    // ~TEST TRANSITION
-    float fadeDuration = 4f;
+    [Header("Inventory")]
+    public float gold;
+    public float eggs;
+    public float wool;
+    public float milk;
+
+    [Header("UI Elements")]
+    public TextMeshProUGUI goldText;
+    public TextMeshProUGUI phaseText;
+
+ 
 
     // Start is called before the first frame update
     void Start()
@@ -63,14 +73,11 @@ public class GameManager : MonoBehaviour
         isFadingTransiton = true;
         loadNextPhase = false;
 
-        transitionTimerMax = 5f;
-        transitionTimer = transitionTimerMax;
-
+        // Phase Detauls
         currentGamePhase = GamePhase.Selection;
+        phaseText.text = "Selection";
+        goldText.text = "0";
 
-        //TransitionFade(transitionCanvas, transitionCanvas.alpha, 1);
-        
-        //StartCoroutine(ToggleTransition(transitionCanvas, 0, 1));
     }
 
     // Update is called once per frame
@@ -80,113 +87,179 @@ public class GameManager : MonoBehaviour
             OutcomesPhase();
 
         //TransitionFade(transitionCanvas, transitionCanvas.alpha, 1);
-        if(Input.GetKeyDown(KeyCode.P))
-            StartCoroutine(ToggleTransition(transitionCanvas, 1, 0));
+        //if(Input.GetKeyDown(KeyCode.P))
+            //StartCoroutine(ToggleTransition(transitionCanvas, 1, 0, fadeDuration));
 
         if (timeManager.roundOver)
         {
-            StartCoroutine(ToggleTransition(transitionCanvas, 0, 1));
+            StartCoroutine(ToggleTransition(transitionCanvas, 0.5f, 1, fadeDuration));
+            timeManager.roundOver = false;
         }
 
     }
 
-    IEnumerator ToggleTransition(CanvasGroup _transitionCanvas, float start, float end)
+    IEnumerator ToggleTransition(CanvasGroup _transitionCanvas, float start, float end, float _duration)
     {
         float counter = 0f;
-        while (counter < fadeDuration)
+        while (counter < _duration)
         {
             counter += Time.deltaTime;
-            _transitionCanvas.alpha = Mathf.Lerp(start, end, counter / fadeDuration);
+            _transitionCanvas.alpha = Mathf.Lerp(start, end, counter / _duration);
 
             // If we're moving back to Alpha 0, we're about to return into the game
             if (end == 0 && _transitionCanvas.alpha == 0)
             {
                 NextPhase();
-                timeManager.StartTimer();
             }
 
-            else if (end == 1 && _transitionCanvas.alpha == 1)
+            // Transitin Back to Scene
+            if (end == 1 && _transitionCanvas.alpha == 1)
             {
-                StartCoroutine(ToggleTransition(_transitionCanvas, 1, 0));
+                StartCoroutine(ToggleTransition(_transitionCanvas, 1, 0, fadeDuration));
             }
 
             yield return null;
-
         }
-
     }
 
     public void NextPhase()
     {
         switch (currentGamePhase)
         {
-            case GamePhase.Selection:
+            case GamePhase.Selection:              
+                // Next Phase/Text
+                OutcomesPhase();
+                phaseText.text = "Outcomes";
                 currentGamePhase = GamePhase.Outcomes;
+                timeManager.StartTimer(timeManager.timerMax / 2);
                 break;
+
             case GamePhase.Outcomes:
-                currentGamePhase = GamePhase.EndTurn;
-                break;
-            case GamePhase.EndTurn:
-                currentGamePhase = GamePhase.Events;
-                break;
-            case GamePhase.Events:
-                currentGamePhase = GamePhase.Upgrades;
-                break;
-            case GamePhase.Upgrades:
+                // Next Phase/Text
+                SelectAnimalPhase();
+                phaseText.text = "Selection";            
                 currentGamePhase = GamePhase.Selection;
+                timeManager.StartTimer(timeManager.timerMax);
                 break;
+
+            case GamePhase.EndTurn:
+                phaseText.text = "EndTurn";
+                //EndTurnPhase();
+                //currentGamePhase = GamePhase.Selection;
+                //currentGamePhase = GamePhase.Events;
+                break;
+
+            case GamePhase.Events:
+                phaseText.text = "Events";
+                //currentGamePhase = GamePhase.Upgrades;
+                break;
+
+            case GamePhase.Upgrades:
+                phaseText.text = "Upgrdaes";
+                //currentGamePhase = GamePhase.Selection;
+                break;
+
             case GamePhase.Transition:
+                phaseText.text = "Transition";
                 //currentGamePhase = GamePhase.Outcomes;
                 break;
             default:
                 break;
         }
-        currentGamePhase++;
+
         Debug.Log("NextPhase Started: " + currentGamePhase);
-        timeManager.StartTimer();
     }
-  
+
     public void SelectAnimalPhase()
     {
+        foreach (var animal in animalList)
+        {
+            AnimalStats animalStats = animal.GetComponent<AnimalStats>();
+            AnimalController animalController = animal.GetComponent<AnimalController>();
+            animalController.currentBuilding = Buildings.None;
+            animalController.SelectUnit(false);          
+        }
+
+        // Reset Animals to the field
+        ResetAnimalsToField();
+
 
     }
 
     #region Outcome Phase
     public void OutcomesPhase()
     {
+
+        if (animalList.Count <= 0)
+            Debug.Log("YOU LOSE");
+
+        // Reset Animals to the field
+        ResetAnimalsToField();
+
         foreach (var animal in animalList)
         {
             AnimalStats animalStats = animal.GetComponent<AnimalStats>();
+            AnimalController animalController = animal.GetComponent<AnimalController>();
             Debug.Log("Ran: " + animalStats.animalName.text);
 
-            int random = Random.Range(0, 6);
-            if(random > 1)
-                Feed(animalStats);
-
-            if (random == 0)
-                Breed(animalStats);
-
-            if (random == 1)
-                Produce(animalStats);
+            switch (animalController.currentBuilding)
+            {
+                case Buildings.None:
+                    // DO NOTHING
+                    break;
+                case Buildings.Breed:
+                    Breed(animalStats);
+                    break;
+                case Buildings.Feed:
+                    Feed(animalStats);
+                    break;
+                case Buildings.Produce:
+                    Produce(animalStats);
+                    break;
+                case Buildings.Sell:
+                    Sell(animalStats);
+                    break;
+                default:
+                    break;
+            }
         }
 
+
+        // ~ Should we embed the EndTurnPhase here or it's own Phase
         foreach (var animal in animalList)
         {
             AnimalStats animalStats = animal.GetComponent<AnimalStats>();
             EndTurnPhase(animalStats);
         }
 
-        /*
-        foreach (var spawnedAnimal in tempPerRoundSpawnList)
+        // Handle "Death" and "Selling" from 'Sell' and 'EndTurn'
+        foreach (var animal in tempAnimalDeathList)
         {
-            animalList.Add(spawnedAnimal);
+            if (animalList.Contains(animal))
+            {
+                animalList.Remove(animal);
+            }
         }
-        */
 
+        foreach (var animal in tempAnimalDeathList)
+        {
+            Destroy(animal.gameObject);
+        }
+
+
+
+        // Spawning Animals
         HandleSpawningAnimals(sheepToSpawn, cowToSpawn, chickenToSpawn);
+        ResetAnimalToSpawnNumbers();
 
-        // Reset Temp Variables
-        //tempPerRoundSpawnList.Clear();
+        // Gold Output
+        goldText.text = gold.ToString("F0");
+        //Debug.Log("Gold After Round: " + gold);
+    }
+
+   
+    public void ResetAnimalToSpawnNumbers()
+    {
         sheepToSpawn = 0;
         cowToSpawn = 0;
         chickenToSpawn = 0;
@@ -249,13 +322,13 @@ public class GameManager : MonoBehaviour
         {
             switch (animal.animalType)
             {
-                case AnimalStats.AnimalType.Sheep:
+                case AnimalType.Sheep:
                     sheepToSpawn++;
                     break;
-                case AnimalStats.AnimalType.Cow:
+                case AnimalType.Cow:
                     cowToSpawn++;
                     break;
-                case AnimalStats.AnimalType.Chicken:
+                case AnimalType.Chicken:
                     chickenToSpawn++;
                     break;
                 default:
@@ -300,11 +373,28 @@ public class GameManager : MonoBehaviour
         animal.productionBar.SetSliderValue(animal.produce);
     }
 
-    public void Sell()
+    public void Sell(AnimalStats animal)
     {
+        switch (animal.animalType)
+        {
+            case AnimalType.Chicken:
+                gold += chickenValue * animal.health / 100;
+                break;
+            case AnimalType.Sheep:
+                gold += sheepValue * animal.health / 100;
+                break;
+            case AnimalType.Cow:
+                gold += cowValue * animal.health / 100;
+                break;
+            default:
+                break;
+        }
 
+        Debug.Log("Animal Sold");
+        tempAnimalDeathList.Add(animal.gameObject);
     }
     #endregion
+
 
     public void EndTurnPhase(AnimalStats animal)
     {
@@ -340,6 +430,23 @@ public class GameManager : MonoBehaviour
         animal.productionBar.SetSliderValue(animal.produce);
 
         animal.currentAge += 1;
+
+        // Animal 'death' list (same as sell list for now, just dissapear)
+        if (animal.health <= 0)
+        {
+            Debug.Log("Animal Died");
+            tempAnimalDeathList.Add(animal.gameObject);
+        }
+
+    }
+
+    public void ResetAnimalsToField()
+    {
+        foreach (var animal in animalList)
+        {
+            AnimalController animalController = animal.GetComponent<AnimalController>();
+            animalController.SetAnimalVisuals(true);
+        }
     }
 
 

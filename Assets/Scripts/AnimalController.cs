@@ -17,9 +17,12 @@ public class AnimalController : MonoBehaviour
     NavMeshAgent agent;
     public float walkRadius;
 
+    GameManager gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         agent = GetComponent<NavMeshAgent>();
         selectionHighlighter = GetComponent<SelectionHighlighter>();
         isSelected = false;
@@ -34,6 +37,12 @@ public class AnimalController : MonoBehaviour
         if (agent != null && agent.remainingDistance <= agent.stoppingDistance)
         {
             agent.SetDestination(RandomNavMeshLocation());
+        }
+
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+        {
+            isSelected = false;
+            selectionHighlighter.UnHighlighSelectedUnit();
         }
     }
 
@@ -55,18 +64,18 @@ public class AnimalController : MonoBehaviour
     }
 
 
-
-    public void SetDestination(Vector3 destination)
-    {
-        isSelected = false;
-        agent.SetDestination(destination);
-        selectionHighlighter.UnHighlighSelectedUnit();
-    }
-
     public void SelectUnit(bool unitSelected)
     {
+
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+        {
+            unitSelected = false;
+            selectionHighlighter.UnHighlighSelectedUnit();
+            return;
+        }
+
         isSelected = unitSelected;
-        if(isSelected)
+        if (isSelected)
             selectionHighlighter.HighlightSelectedUnit();
         if(!isSelected)
             selectionHighlighter.UnHighlighSelectedUnit();
@@ -74,6 +83,9 @@ public class AnimalController : MonoBehaviour
 
     public void SetBuilding(Buildings building)
     {
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+            return;
+
         currentBuilding = building;
     }
 

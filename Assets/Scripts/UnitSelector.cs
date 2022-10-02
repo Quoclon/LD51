@@ -5,16 +5,20 @@ using UnityEngine;
 public class UnitSelector : MonoBehaviour
 {
     public AnimalController? animalController;
+    public GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         { 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

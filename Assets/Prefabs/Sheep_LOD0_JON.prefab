@@ -228,11 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentBuilding: 0
   isSelected: 0
-  isActive: 0
-  isWandering: 0
   walkRadius: 0
-  timer: 0
-  timerMax: 0
 --- !u!114 &1646062018184026017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,11 +241,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541f9afa0e8bf1240ae7d4e8e43efe70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalType: 0
+  animalType: 1
   healthMod: 50
   healthMax: 100
   health: 0
-  healthMin: 0
+  healthMin: 20
   cngHealth: 0
   feedMax: 0
   feed: 0
@@ -265,7 +261,7 @@ MonoBehaviour:
   currentAge: 0
   youngAge: 4
   adultAge: 11
-  seniorAge: 0
+  seniorAge: 20
   youngStats: {fileID: 3022415705310772569}
   adultStats: {fileID: 3022415705310772568}
   seniorStats: {fileID: 3022415705310772567}

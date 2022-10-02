@@ -9,6 +9,7 @@ public class TimerManager : MonoBehaviour
     public Image uiFill;
     public TextMeshProUGUI uiText;
 
+    [Header("Timers")]
     public float timer;
     public float timerMax;
     public bool timerRunning;
@@ -24,7 +25,7 @@ public class TimerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        StartTimer();
+        StartTimer(timerMax);
     }
 
     // Update is called once per frame
@@ -33,7 +34,7 @@ public class TimerManager : MonoBehaviour
         if (!timerRunning)
             return;
 
-        uiText.text = $"{timer.ToString("F1")}";
+        uiText.text = $"{timer.ToString("F0")}";
         uiFill.fillAmount = Mathf.InverseLerp(0, timerMax, timer);
         timer -= Time.deltaTime;
 
@@ -43,9 +44,9 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    public void StartTimer()
+    public void StartTimer(float _TimerMax)
     {
-        timer = timerMax;
+        timer = _TimerMax;
         timerRunning = true;
         roundOver = false;
     }

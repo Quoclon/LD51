@@ -59,7 +59,6 @@ public class AnimalStats : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         SetupBars();
         SetupNames();
     }
@@ -111,11 +110,11 @@ public class AnimalStats : MonoBehaviour
     {
 
     }
+}
 
-    public enum AnimalType
-    {
-        Sheep,
-        Cow,
-        Chicken
-    }
+public enum AnimalType
+{
+    Chicken,
+    Sheep,
+    Cow
 }

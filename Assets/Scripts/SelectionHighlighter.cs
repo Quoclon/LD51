@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class SelectionHighlighter : MonoBehaviour
 {
+    GameManager gameManager;
+
     [Header("Appear/Dissapear Objets")]
     public CapsuleCollider capsuleCollider;
     public Canvas worldSpaceStatsCanvas;
@@ -26,6 +28,7 @@ public class SelectionHighlighter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         skinRendererOutline.material = outlineNone;
     }
 
@@ -44,13 +47,23 @@ public class SelectionHighlighter : MonoBehaviour
 
     private void OnMouseOver()
     {
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+        {
+            skinRendererOutline.material = outlineNone;
+        }
+
         if(!animalController.isSelected)
             skinRendererOutline.material = outlineYellow;
     }
 
     private void OnMouseExit()
     {
-        if(!animalController.isSelected)
+        if (gameManager.currentGamePhase != GamePhase.Selection)
+        {
+            skinRendererOutline.material = outlineNone;
+        }
+
+        if (!animalController.isSelected)
             skinRendererOutline.material = outlineNone;
     }
 
