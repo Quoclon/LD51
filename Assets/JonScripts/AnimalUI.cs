@@ -7,15 +7,17 @@ public class AnimalUI : MonoBehaviour
 {
 
     public float speed;
-    public float maxHealth;
-    public float minHealth;
-    public float currentHealth;
-    public float maxBreeding;
-    public float minBreeding;
-    public float currentBreeding;
-    public float maxProduction;
-    public float minProduction;
-    public float currentProduction;
+    public float healthMax;
+    public float healthMin;
+    public float health;
+
+    public float breedMax;
+    public float breedMin;
+    public float breed;
+
+    public float produceMax;
+    public float produceMin;
+    public float produce;
 
     public float cngHealth;
     public float cngBreeding;
@@ -40,15 +42,15 @@ public class AnimalUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = minHealth;
+        health = healthMin;
         healthBar.SetSliderValueMax(100);
-        healthBar.SetSliderValue(currentHealth);
-        currentBreeding = minBreeding;
+        healthBar.SetSliderValue(health);
+        breed = breedMin;
         breedingBar.SetSliderValueMax(.5f);
-        breedingBar.SetSliderValue(currentBreeding);
-        currentProduction = minProduction;
+        breedingBar.SetSliderValue(breed);
+        produce = produceMin;
         productionBar.SetSliderValueMax(1);
-        productionBar.SetSliderValue(currentProduction);
+        productionBar.SetSliderValue(produce);
 
         wool = 0;
         currentAge = 0;
@@ -93,9 +95,10 @@ public class AnimalUI : MonoBehaviour
             SellAnimal();
         }
 
+    }
 
-
-
+    void Movement()
+    {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
@@ -103,7 +106,6 @@ public class AnimalUI : MonoBehaviour
         movementDirection.Normalize();
 
         transform.Translate(movementDirection * speed * Time.deltaTime);
-
     }
 
     void Feed()
@@ -111,7 +113,7 @@ public class AnimalUI : MonoBehaviour
         if (currentAge <= 4)
         {
             cngHealth = Random.Range(4, 21);
-            currentHealth += cngHealth;
+            health += cngHealth;
 
         }
 
@@ -119,23 +121,22 @@ public class AnimalUI : MonoBehaviour
         {
 
             cngHealth = Random.Range(5, 21);
-            currentHealth += cngHealth;
+            health += cngHealth;
         }
 
         if (currentAge > 4 && currentAge < 11)
         {
             cngHealth = Random.Range(10, 31);
-            currentHealth += cngHealth;
+            health += cngHealth;
 
         }
 
-        if (currentHealth > 100)
+        if (health > 100)
         { 
-         currentHealth = 100;
+         health = 100;
         }
 
-        healthBar.SetSliderValue(currentHealth);
-
+        healthBar.SetSliderValue(health);
     }
 
     void Breeding()
@@ -143,31 +144,30 @@ public class AnimalUI : MonoBehaviour
 
         if (currentAge >= 11)
         {
-            if (Random.Range(0, 1) < currentBreeding)
+            if (Random.Range(0, 1) < breed)
             {
                 //Need Instanciate Code
                 sheep += 1;
             }
 
             cngBreeding = Random.Range(-.2f, -.45f);
-            currentBreeding += cngBreeding;
+            breed += cngBreeding;
         }
 
         if (currentAge < 11)
         {
-            if (Random.Range(0, 1) < currentBreeding)
+            if (Random.Range(0, 1) < breed)
             {
                 //Need Instanciate Code
                 sheep += 1;
             }
 
             cngBreeding = Random.Range(-.35f, -.5f);
-            currentBreeding += cngBreeding;
+            breed += cngBreeding;
 
         }
 
-        breedingBar.SetSliderValue(currentBreeding);
-
+        breedingBar.SetSliderValue(breed);
     }
 
 
@@ -175,94 +175,73 @@ public class AnimalUI : MonoBehaviour
     {
         if (currentAge < 11)
         {
-            gold += (currentProduction * woolValue) * (currentHealth / healthMod);
+            gold += (produce * woolValue) * (health / healthMod);
             cngProduction = Random.Range(-.05f, -.2f);
-            currentProduction += cngProduction;
+            produce += cngProduction;
         
         }
 
         if (currentAge >= 11)
         {
-            gold += (currentProduction * woolValue) * (currentHealth / healthMod);
+            gold += (produce * woolValue) * (health / healthMod);
             cngProduction = Random.Range(-.1f, -.3f);
-            currentProduction += cngProduction;
-
-
+            produce += cngProduction;
         }
 
-        productionBar.SetSliderValue(currentProduction);
-
+        productionBar.SetSliderValue(produce);
     }
 
     void SellAnimal()
     {
         if (sheep > 0)
         {
-            gold += sheepValue * (currentHealth / healthMod);
+            gold += sheepValue * (health / healthMod);
             sheep -= 1;
-        }
-        
-    
+        }         
     }
-
 
     void EndTurn()
     {
         if (currentAge <= 4)
         {
             cngHealth = (Random.Range(1, 6));
-            currentHealth += cngHealth;
+            health += cngHealth;
 
-            cngBreeding = (Random.Range(.02f, .05f) * (currentHealth / healthMod));
-            currentBreeding += cngBreeding;
+            cngBreeding = (Random.Range(.02f, .05f) * (health / healthMod));
+            breed += cngBreeding;
 
-            cngProduction = (Random.Range(.1f, .2f) * (currentHealth / healthMod));
-            currentProduction += cngProduction;
-
-        
+            cngProduction = (Random.Range(.1f, .2f) * (health / healthMod));
+            produce += cngProduction;       
         }
 
         if (currentAge > 4 && currentAge < 11)
         {
             cngHealth = (Random.Range(-1, -16));
-            currentHealth += cngHealth;
+            health += cngHealth;
 
-            cngBreeding = (Random.Range(.05f, .2f) * (currentHealth / healthMod));
-            currentBreeding += cngBreeding;
+            cngBreeding = (Random.Range(.05f, .2f) * (health / healthMod));
+            breed += cngBreeding;
 
-            cngProduction = (Random.Range(.15f, .25f) * (currentHealth / healthMod));
-            currentProduction += cngProduction;
-
-
+            cngProduction = (Random.Range(.15f, .25f) * (health / healthMod));
+            produce += cngProduction;
         }
 
         if (currentAge > 11)
         {
             cngHealth = (Random.Range(-10, -25));
-            currentHealth += cngHealth;
+            health += cngHealth;
 
-            cngBreeding = (Random.Range(.01f, .15f) * (currentHealth / healthMod));
-            currentBreeding += cngBreeding;
+            cngBreeding = (Random.Range(.01f, .15f) * (health / healthMod));
+            breed += cngBreeding;
 
-            cngProduction = (Random.Range(.01f, .1f) * (currentHealth / healthMod));
-            currentProduction += cngProduction;
-
-
+            cngProduction = (Random.Range(.01f, .1f) * (health / healthMod));
+            produce += cngProduction;
         }
 
-        healthBar.SetSliderValue(currentHealth);
-        breedingBar.SetSliderValue(currentBreeding);
-        productionBar.SetSliderValue(currentProduction);
+        healthBar.SetSliderValue(health);
+        breedingBar.SetSliderValue(breed);
+        productionBar.SetSliderValue(produce);
 
         currentAge += 1;
-
-
-
-
     }
-
-
-
-
-
 }
