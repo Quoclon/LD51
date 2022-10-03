@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/PolygonFarm/Demo/Demo - Custom.unity
+    guid: 9c77ba44fe444e14799ff13978743de5
   m_configObjects: {}
