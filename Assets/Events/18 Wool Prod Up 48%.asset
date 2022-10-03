@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dfe44301b51d9a4584a644162af3355, type: 3}
+  m_Name: 18 Wool Prod Up 48%
+  m_EditorClassIdentifier: 
+  headline: FLEECED LIGHTING!
+  story: Local inventor has created a treadmill system that allows sheep to produce
+    electricity and return it to the grid.  Sheep production to increase 48%.
+  effectValue: 1.48
+  effectType: 12

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dfe44301b51d9a4584a644162af3355, type: 3}
+  m_Name: 12 Mlk Pro Dn 42%
+  m_EditorClassIdentifier: 
+  headline: CRY OVER SOUR MILK!
+  story: A bad batch of feed has caused a large portion of milk production to be
+    spoiled.  Milk production is likey to suffer a 47% drop.
+  effectValue: 0.53
+  effectType: 14
